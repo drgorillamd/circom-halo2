@@ -1,0 +1,14 @@
+{
+  "name": "sudoku",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {},
+  "scripts": {
+    "prove:circom": "cd circom && circom sudoku.circom --r1cs --wasm && cd sudoku_js && node generate_witness.js sudoku.wasm ../../input.json witness.wtns",
+    "prove:halo2": "",
+    "verify:circom": "",
+    "verify:halo2": ""
+  },
+  "author": "",
+  "license": "ISC"
+}
