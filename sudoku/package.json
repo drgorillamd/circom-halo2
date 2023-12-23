@@ -4,9 +4,9 @@
   "description": "",
   "devDependencies": {},
   "scripts": {
-    "prove:circom": "cd circom && circom sudoku.circom --r1cs --wasm && cd sudoku_js && node generate_witness.js sudoku.wasm ../../input.json witness.wtns",
+    "prove:circom": "cd circom && circom sudoku.circom --r1cs --wasm && cd sudoku_js && node generate_witness.js sudoku.wasm ../../input.json witness.wtns && snarkjs groth16 prove multiplier2_0001.zkey witness.wtns proof.json public.json",
     "prove:halo2": "",
-    "verify:circom": "",
+    "verify:circom": "snarkjs groth16 verify verification_key.json public.json proof.json",
     "verify:halo2": ""
   },
   "author": "",

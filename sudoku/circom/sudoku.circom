@@ -12,7 +12,7 @@ template Sudoku () {
         }
     }
 
-    // Validate the solution is correct row-wise (only unique values in 1-9)
+    // Validate the solution is correct row- and column-wise (ie only unique values in 1-9)
     for(var i = 0; i < 9; i++) {
         var unique_elements_row[9];
         var unique_elements_col[9];
@@ -27,15 +27,15 @@ template Sudoku () {
     }
 
     // Validate each blocks
-    for(var block_x = 0; block_x < 3; block_x++) {
-        for(var block_y = 0; block_y < 3; block_y++) {
+    for(var start_offset_x = 0; start_offset_x < 9; start_offset_x += 3) {
+        for(var start_offset_y = 0; start_offset_y < 9; start_offset_y += 3) {
             // Validate the current block
             var unique_elements_block[9];
 
-            for(var i = 0; i < 3; i++) {
-                for(var j = 0; j < 3; j++) {
-                    assert(unique_elements_block[solution[(block_x * 3) + i][(block_y * 3) + j]] == 0);
-                    unique_elements_block[solution[(block_x * 3) + i][(block_y * 3) + j]] = 1;
+            for(var i = start_offset_x; i < start_offset_x + 3; i++) {
+                for(var j = start_offset_y; j < start_offset_y + 3; j++) {
+                    assert(unique_elements_block[solution[i][j] - 1] == 0);
+                    unique_elements_block[solution[i][j] - 1] = 1;
                 }
             }
         }
