@@ -37,13 +37,16 @@ template Sudoku () {
     // Check if only unique values
     component validSolutionRow[9];
     component validSolutionColumn[9];
-    
+
     for(var i = 0; i < 9; i++) {
         validSolutionRow[i] = validateSolution();
         validSolutionColumn[i] = validateSolution();
 
         validSolutionRow[i].in <== solution[i];
 
+        for(var j = 0; j < 9; j++) {
+            validSolutionColumn[i].in[j] <== solution[j][i];
+        }
     }
 
     // // Validate each blocks (in range and only unique values)
