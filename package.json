@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "circomlib": "iden3/circomlib"
+  }
+}

@@ -4,11 +4,19 @@
   "description": "",
   "devDependencies": {},
   "scripts": {
-    "prove:circom": "cd circom && circom sudoku.circom --r1cs --wasm && cd sudoku_js && node generate_witness.js sudoku.wasm ../../input.json witness.wtns && snarkjs groth16 prove multiplier2_0001.zkey witness.wtns proof.json public.json",
-    "prove:halo2": "",
-    "verify:circom": "snarkjs groth16 verify verification_key.json public.json proof.json",
-    "verify:halo2": ""
+    "circom:all": "yarn circom:compile && yarn circom:trusted_setup && yarn circom:witness && yarn circom:gen_proof && yarn circom:verify",
+    "circom:compile": "cd circom && circom sudoku.circom --r1cs --wasm",
+    "circom:trusted_setup": "yarn circom:new_ceremony && yarn circom:contribute_ceremony && yarn circom:prepare_2 && yarn circom:gen_zkey && yarn circom:contribute_2 && yarn circom:export_verif_key",
+    "circom:new_ceremony": "cd circom && mkdir trusted_setup && snarkjs powersoftau new bn128 12 trusted_setup/pot12_0000.ptau -v && cd ..",
+    "circom:contribute_ceremony": "cd circom && snarkjs powersoftau contribute trusted_setup/pot12_0000.ptau trusted_setup/pot12_0001.ptau --name=\"First contribution\" -v && cd ..",
+    "circom:prepare_2": "cd circom && snarkjs powersoftau prepare phase2 trusted_setup/pot12_0001.ptau trusted_setup/pot12_final.ptau -v && cd ..",
+    "circom:gen_zkey": "cd circom && snarkjs groth16 setup sudoku.r1cs trusted_setup/pot12_final.ptau sudoku_0000.zkey && cd ..",
+    "circom:contribute_2": "cd circom && snarkjs zkey contribute sudoku_0000.zkey sudoku_0001.zkey --name=\"1st Contributor Name\" -v && cd ..",
+    "circom:export_verif_key": "cd circom && snarkjs zkey export verificationkey sudoku_0001.zkey verification_key.json && cd ..",
+    "circom:witness": "cd ./circom/sudoku_js && node generate_witness.js sudoku.wasm ../../input.json ../witness.wtns",
+    "circom:gen_proof": "cd ./circom && snarkjs groth16 prove sudoku_0001.zkey witness.wtns proof.json public.json",
+    "circom:verify": "cd ./circom && snarkjs groth16 verify verification_key.json public.json proof.json"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "drgorillamd",
+  "license": "MIT"
 }
