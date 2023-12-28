@@ -49,20 +49,24 @@ template Sudoku () {
         }
     }
 
-    // // Validate each blocks (in range and only unique values)
-    // for(var start_offset_x = 0; start_offset_x < 9; start_offset_x += 3) {
-    //     for(var start_offset_y = 0; start_offset_y < 9; start_offset_y += 3) {
-    //         // Validate the current block
-    //         var unique_elements_block[9];
+    // Validate each blocks (in range and only unique values)
+    component validSolutionBlock[9];
 
-    //         for(var i = start_offset_x; i < start_offset_x + 3; i++) {
-    //             for(var j = start_offset_y; j < start_offset_y + 3; j++) {
-    //                 assert(unique_elements_block[solution[i][j] - 1] == 0);
-    //                 unique_elements_block[solution[i][j] - 1] = 1;
-    //             }
-    //         }
-    //     }
-    // }
+    for(var i = 0; i < 9; i++) {
+        validSolutionBlock[i] = validateSolution();
+    }
+
+    for(var x_axis = 0; x_axis < 3; x_axis++ ) {
+        for(var y_axis = 0; y_axis < 3; y_axis++) {
+
+            // Validate the current block
+            for(var i = 0; i < 3; i++) {
+                for(var j = 0; j < 3; j++) {
+                    validSolutionBlock[x_axis * 3 + y_axis].in[i * 3 + j] <== solution[x_axis * 3 + i][y_axis * 3 + j];
+                }
+            }
+        }
+    }
 }
 
 template validateSolution() {
