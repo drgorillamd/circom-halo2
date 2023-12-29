@@ -1,4 +1,4 @@
-pragma circom 2.1.6;
+pragma circom 2.1.5;
 
 include "../../node_modules/circomlib/circuits/comparators.circom";
 include "../../node_modules/circomlib/circuits/gates.circom";
@@ -12,24 +12,14 @@ template Sudoku () {
     signal input solution[9][9];
 
     // Validate that the solution contains the question (or the question contains a zero at that index)
-    component solutionContainsQuestion[9][9];
-    component questionIsZero[9][9];
     component validSolutionGrid[9][9];
-
     for(var i = 0; i < 9; i++) {
         for(var j = 0; j < 9; j++) {
-            solutionContainsQuestion[i][j] = IsEqual();
-            questionIsZero[i][j] = IsZero();
             validSolutionGrid[i][j] = OR();
 
-            solutionContainsQuestion[i][j].in[0] <== question[i][j];
-            solutionContainsQuestion[i][j].in[1] <== solution[i][j];
-
-            questionIsZero[i][j].in <== question[i][j];
-
             // Either the solution value == question value, or question value == 0
-            validSolutionGrid[i][j].a <== questionIsZero[i][j].out;
-            validSolutionGrid[i][j].b <== solutionContainsQuestion[i][j].out;
+            validSolutionGrid[i][j].a <== IsZero()(question[i][j]);
+            validSolutionGrid[i][j].b <== IsEqual()([question[i][j], solution[i][j]]);
 
             validSolutionGrid[i][j].out === 1;
         }
@@ -38,17 +28,15 @@ template Sudoku () {
     // For each row & col vector in the solution matrix:
     // Check if all the values are in range (1;9) - 0 is not possible in the solution
     // Check if only if it contrains only unique values (1..9)
-    component validSolutionRow[9];
     component validSolutionColumn[9];
 
     for(var i = 0; i < 9; i++) {
-        validSolutionRow[i] = validateSolution();
         validSolutionColumn[i] = validateSolution();
 
-        // Pass the whole vector
-        validSolutionRow[i].in <== solution[i];
+        // Pass the whole row vector
+        validateSolution()(solution[i]);
 
-        // Pass the transposed
+        // Pass the transposed column vector
         for(var j = 0; j < 9; j++) {
             validSolutionColumn[i].in[j] <== solution[j][i];
         }
@@ -77,7 +65,7 @@ template Sudoku () {
 // Take a vector as an input and check:
 // - each value appears exactly once
 // - each value are between 1 and 9 (x != 0 && x < 10)
-template validateSolution() {
+template parallel validateSolution() {
     signal input in[9];
     
     // Comparison matrix of 2 vectors, here, we compare the vector with itself and the
