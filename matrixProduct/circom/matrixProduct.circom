@@ -4,6 +4,8 @@ include "../../node_modules/circomlib/circuits/comparators.circom";
 
 // takes 2 private signals in (a and b) and a public one (c).
 // checks if the matrix a[M][N] . b[N][P] == c[M][P]
+// this is pretty useless as anyone can find A and B satisfying this, but it
+// was funny to code tho.
 // https://www.reddit.com/r/cryptography/s/kGMmhprA8N
 template CheckMatrixProduct(M,N,P) {
     // A . B = C with dim(A) = MxN, dim(B)=NxP and dim(C)=NxN
